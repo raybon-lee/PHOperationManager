@@ -153,17 +153,41 @@ static PHOperationManager * __operationManager = nil;
     NSMutableArray * modelArray = [NSMutableArray array];
 
    __block UtilTools * tools ;
+
+    PHContentEditingInputRequestOptions * op = [[PHContentEditingInputRequestOptions alloc]init];
+    op.networkAccessAllowed = NO;
+    op.canHandleAdjustmentData = ^BOOL(PHAdjustmentData * data){
+        return NO;
+    };
+    PHImageRequestOptions * operations = [[PHImageRequestOptions alloc]init];
+    operations.networkAccessAllowed = NO;
+    operations.synchronous = NO;
+    for (int i=0; i<monthFetch.count; i++) {
+        PHAsset * asset = [monthFetch objectAtIndex:i];
+        NSLog(@"----");
+
+        
+        [[PHImageManager defaultManager] requestImageDataForAsset:asset options:operations resultHandler:^(NSData * _Nullable imageData, NSString * _Nullable dataUTI, UIImageOrientation orientation, NSDictionary * _Nullable info) {
+            NSLog(@"info = %@",info);
+
+        }];
+
+//        [asset requestContentEditingInputWithOptions:op completionHandler:^(PHContentEditingInput * _Nullable contentEditingInput, NSDictionary * _Nonnull info) {
+//            NSLog(@"请求到图片");
+//        }];
+    }
+    return ;
     if (monthFetch) {
 
         [monthFetch enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
 
             PHAsset * asset = (PHAsset *)obj;
-            PHAssetMode * assModel = [PHAssetMode manager_TransformAssetToAssetMode:asset];
-            [assModel handleCallBackTheLocalFilePathWithAsset:asset withCompletionBlock:^(id assetMode) {
-                PHAssetMode * mod = (PHAssetMode *)assModel;
-                NSLog(@"=======modfilepath = %@",mod.mode_fileName);
-
-            }];
+//            PHAssetMode * assModel = [PHAssetMode manager_TransformAssetToAssetMode:asset];
+//            [assModel handleCallBackTheLocalFilePathWithAsset:asset withCompletionBlock:^(id assetMode) {
+//                PHAssetMode * mod = (PHAssetMode *)assModel;
+//                NSLog(@"=======modfilepath = %@",mod.mode_fileName);
+//
+//            }];
              tools = [UtilTools getCurrentWeekOfYearByDate:asset.creationDate];
             [modelArray addObject:tools];
 

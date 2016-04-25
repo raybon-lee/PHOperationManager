@@ -45,6 +45,7 @@
 
 
     }];
+    /*
     [[PHOperationManager shareOperationManager] managerQueryThePHAssetCollectionsFromSmartAlbumsHandleWithCompletion:^(NSArray<PHAlbumMode  *> * _Nonnull collectionAlbums) {
         [collectionAlbums enumerateObjectsUsingBlock:^(PHAlbumMode * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
              NSLog(@" %@",obj.album_name);
@@ -75,11 +76,14 @@
     }];
     NSString  * tool = [UtilTools returnTheFirstDateAndLastDateByDate:[NSDate date]];
     NSLog(@"tool = %@",tool);
+     */
     [[PHOperationManager shareOperationManager] managerRequestMonthAssetsListOfTotalResource:^(NSArray<NSDictionary *> * _Nonnull monthArrayList) {
 
         [self querySortedPhotoAssetsWithArray:monthArrayList];
     }];
+    
 
+   
 
 }
 - (void)querySortedPhotoAssetsWithArray:(NSArray *)monthArrayList{
@@ -115,13 +119,13 @@
 
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return self.resultArray.count;
+    return 100;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:@"cellid" forIndexPath:indexPath];
-    PHAlbumMode * mode = self.resultArray[indexPath.row];
+//    PHAlbumMode * mode = self.resultArray[indexPath.row];
 //    cell.imageView.image = mode.album_name;
-    cell.textLabel.text = mode.album_name;
+    cell.textLabel.text = [NSString stringWithFormat:@"%d",indexPath.row];
 
     return cell;
 }
