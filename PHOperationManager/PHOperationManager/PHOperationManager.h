@@ -82,6 +82,10 @@ NS_CLASS_AVAILABLE_IOS(8_0)  @interface PHOperationManager : NSObject<NSCopying,
  */
 @property (nonatomic,strong) PHContentEditingInputRequestOptions * manager_EdittingInputRequestOperations;
 
+/*!
+ *  @brief 获取图片时的并行队列
+ */
+@property (nonatomic,strong) dispatch_queue_t        manager_ImageSerialQueue;
 
 
 /*!

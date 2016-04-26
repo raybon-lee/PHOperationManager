@@ -46,6 +46,11 @@ typedef void (^HandleFilePathCompletion)(id assetMode);
  */
 @property (nonatomic,strong) PHLivePhotoView * mode_livePhotoView;
 /*!
+ *  @brief 视频资源的时间
+ */
+@property (nonatomic,assign)  CMTime      mode_CMTime;
+
+/*!
  *  @brief 相册小视频预览图
  */
 @property (nonatomic,strong) UIImage         *  mode_livePhotoImage;

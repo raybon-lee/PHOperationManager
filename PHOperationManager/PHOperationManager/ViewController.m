@@ -24,7 +24,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     self.resultArray =[NSMutableArray array];
-    
+    __weak __typeof(self)  weakself = self;
     self.tableView  = ({
         UITableView * table = [[UITableView alloc]initWithFrame:self.view.bounds style:UITableViewStylePlain];
         [table registerClass:[UITableViewCell class] forCellReuseIdentifier:@"cellid"];
@@ -77,9 +77,25 @@
     NSString  * tool = [UtilTools returnTheFirstDateAndLastDateByDate:[NSDate date]];
     NSLog(@"tool = %@",tool);
      */
-    [[PHOperationManager shareOperationManager] managerRequestMonthAssetsListOfTotalResource:^(NSArray<NSDictionary *> * _Nonnull monthArrayList) {
+        //按照年份和月份归类，e.g  2015-07  2015-10  2016-1
 
-        [self querySortedPhotoAssetsWithArray:monthArrayList];
+    [[PHOperationManager shareOperationManager] managerRequestMonthAssetsListOfTotalResource:^(NSArray<NSDictionary *> * _Nonnull monthArrayList) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            for (NSDictionary *  dic  in monthArrayList) {
+                [dic allKeys];
+                NSLog(@"key = %@",[dic allKeys]);
+
+            }
+            NSLog(@"dictcount = %d",monthArrayList.count);
+
+            weakself.monthList = monthArrayList;
+            [weakself.tableView reloadData];
+        });
+
+
+//        NSLog(@"month = %@",monthArrayList);
+
+        
     }];
     
 
@@ -119,14 +135,19 @@
 
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return 100;
+    return [self.monthList count];
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:@"cellid" forIndexPath:indexPath];
 //    PHAlbumMode * mode = self.resultArray[indexPath.row];
 //    cell.imageView.image = mode.album_name;
-    cell.textLabel.text = [NSString stringWithFormat:@"%d",indexPath.row];
+    NSDictionary  * keys = [self.monthList objectAtIndex:indexPath.row];
+    NSArray * dictArray = [keys objectForKey:[[keys allKeys] firstObject]];
+    PHAssetMode * albumMode = [dictArray firstObject];
 
+    cell.textLabel.text = [NSString stringWithFormat:@"year-month =%@ -count = %d",[[keys allKeys] firstObject],[[[keys allValues] firstObject] count]];
+    cell.imageView.image = albumMode.mode_assetImage;
+    
     return cell;
 }
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{

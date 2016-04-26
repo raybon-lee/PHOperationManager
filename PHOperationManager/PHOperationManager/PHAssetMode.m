@@ -28,6 +28,45 @@
     });
     return newThread;
 }
+/*!
+ *  @brief 添加一个图片请求参数，设置图片的质量
+ *
+ *  @return <#return value description#>
+ */
+extern   PHImageRequestOptions  * CreateImageOperation(){
+    static PHImageRequestOptions * imageOperations;
+
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        imageOperations = [[PHImageRequestOptions alloc]init];
+        imageOperations.networkAccessAllowed = NO;
+        imageOperations.deliveryMode = PHImageRequestOptionsDeliveryModeFastFormat;
+        imageOperations.version   = PHImageRequestOptionsVersionCurrent;
+        imageOperations.resizeMode = PHImageRequestOptionsResizeModeFast;
+
+    });
+    return imageOperations;
+}
+/*!
+ *  @brief 创建一个图片管理对象
+ *
+ *  @return <#return value description#>
+ */
+extern PHImageManager  * CreateImageManager(){
+    return [PHImageManager defaultManager];
+}
+static inline PHVideoRequestOptions  * CreateVideoRequestOpreations(){
+    static PHVideoRequestOptions * __videoOpreaions;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        __videoOpreaions = [[PHVideoRequestOptions alloc]init];
+        __videoOpreaions.networkAccessAllowed = NO;
+        __videoOpreaions.deliveryMode = PHImageRequestOptionsDeliveryModeFastFormat;
+        __videoOpreaions.version = PHImageRequestOptionsVersionCurrent;
+
+    });
+    return __videoOpreaions;
+}
 + (PHAssetMode *)manager_TransformAssetToAssetMode:(PHAsset *)asset{
 
     PHAssetMode * mode_asset = [[PHAssetMode alloc]init];
@@ -50,59 +89,63 @@
     mode_asset.mode_burstIdentifer  = asset.burstIdentifier;
     mode_asset.mode_representsBurst = asset.representsBurst;
     mode_asset.mode_burstSelectionType = asset.burstSelectionTypes;
-       if (asset.mediaType == PHAssetMediaTypeImage) {
-        PHContentEditingInputRequestOptions * editOperations = [[PHContentEditingInputRequestOptions alloc]init];
-//        editOperations.networkAccessAllowed = NO;
-//
-//        editOperations.canHandleAdjustmentData =^BOOL(PHAdjustmentData * data){
-//            return NO;
-//        };
-
-            //TODO: 问题？ 使用PHAsset  会出现阻塞UI的问题，没找到答案，下面这个请求
-            //需要获取图片的URL，但是这个请求是同步形式的阻塞队列
-//           [mode_asset performSelector:@selector(runBackAsset:) withObject:mode_asset afterDelay:2 inModes:@[NSRunLoopCommonModes]];
-//
-//           [mode_asset performSelector:@selector(runBackAsset:) onThread:[[self class] newThread] withObject:mode_asset waitUntilDone:NO ];
-           NSLog(@"========11111111=============");
-           [mode_asset performSelector:@selector(runBackAsset:) onThread:[[self class] newThread] withObject:mode_asset waitUntilDone:NO modes:@[NSRunLoopCommonModes]];
-           NSLog(@"=========2222222222222========");
-           
-
-
-//        dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
-
-//        dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
-
-    }
-    if (asset.mediaType & PHAssetMediaTypeVideo) {
-//        PHVideoRequestOptions * videoOperations = [[PHVideoRequestOptions alloc]init];
-//        videoOperations.deliveryMode = PHImageRequestOptionsDeliveryModeFastFormat;
-//        videoOperations.networkAccessAllowed = NO;
-//        [mode_asset.mode_imageManager requestAVAssetForVideo:asset options:videoOperations resultHandler:^(AVAsset * _Nullable asset, AVAudioMix * _Nullable audioMix, NSDictionary * _Nullable info) {
-//            NSLog(@"=====");
-//
-//        }];
-
-
-    }
-
-
-    if (asset.mediaType & PHAssetMediaTypeVideo) {
+    if (asset.mediaSubtypes & PHAssetMediaSubtypePhotoLive) {
         UIImage * bageLivePhoto = [PHLivePhotoView livePhotoBadgeImageWithOptions:PHLivePhotoBadgeOptionsOverContent];
         mode_asset.mode_livePhotoImage = bageLivePhoto;
-        
+    }
 
-    }else{
+    if (asset.mediaType & PHAssetMediaTypeVideo) {
 
-//        [mode_asset.mode_imageManager requestImageForAsset:asset targetSize:CGSizeMake(100, 100) contentMode:PHImageContentModeAspectFill options:nil resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
-////            NSLog(@"resuilt = %@",result);
-//            mode_asset.mode_assetImage = result;
-//
-//
+         NSLog(@"mediatype = %d subtype = %d",asset.mediaType,asset.mediaSubtypes);
+//        [CreateImageManager() requestPlayerItemForVideo:asset options:CreateVideoRequestOpreations() resultHandler:^(AVPlayerItem * _Nullable playerItem, NSDictionary * _Nullable info) {
+//            
 //        }];
+        UIImage * video_image = [PHLivePhotoView livePhotoBadgeImageWithOptions:PHLivePhotoBadgeOptionsOverContent];
+        mode_asset.mode_livePhotoImage = video_image;
 
+        dispatch_semaphore_t sema = dispatch_semaphore_create(0);
+        [CreateImageManager() requestAVAssetForVideo:asset options:CreateVideoRequestOpreations() resultHandler:^(AVAsset * _Nullable asset, AVAudioMix * _Nullable audioMix, NSDictionary * _Nullable info) {
+//            NSLog(@"开始查找视频");
+             AVURLAsset * urlAVAsset = (AVURLAsset *)asset;
+            mode_asset.mode_CMTime = urlAVAsset.duration;
+            mode_asset.mode_fileUrl = urlAVAsset.URL.absoluteString;
+            mode_asset.mode_fileName = urlAVAsset.URL.absoluteString.lastPathComponent;
+            
+//            NSLog(@"info = %@",urlAVAsset.URL.absoluteString);
+            dispatch_semaphore_signal(sema);
+
+        }];
+        dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+
+//         NSLog(@"我是视频查找结束");
+    }
+
+    if (asset.mediaType & PHAssetMediaTypeImage) {
+
+        dispatch_group_t group  = dispatch_group_create();
+        dispatch_group_enter(group);
+        [CreateImageManager() requestImageDataForAsset:asset options:CreateImageOperation() resultHandler:^(NSData * _Nullable imageData, NSString * _Nullable dataUTI, UIImageOrientation orientation, NSDictionary * _Nullable info) {
+            if (dataUTI) {
+                NSURL * fileurl = [info objectForKey:@"PHImageFileURLKey"];
+                mode_asset.mode_fileUrl = fileurl.absoluteString;
+                mode_asset.mode_UTI = dataUTI;
+                mode_asset.mode_fileName = fileurl.lastPathComponent;
+                mode_asset.mode_assetImage = [UIImage imageWithData:imageData];
+
+//                NSLog(@"fileurl = %@ last = %@",fileurl.absoluteString ,fileurl.lastPathComponent);
+
+            }
+//            NSLog(@"我先执行");
+//            NSLog(@"info = %@ uti = %@",info,dataUTI);
+
+            dispatch_group_leave(group);
+        }];
+        
+        dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
 
     }
+//       NSLog(@"我是最后执行");
+
     return mode_asset;
 
 }
@@ -115,7 +158,7 @@
     };
     [PHCachingImageManager defaultManager];
     [mode_asset.mode_asset requestContentEditingInputWithOptions:editOperations completionHandler:^(PHContentEditingInput * _Nullable contentEditingInput, NSDictionary * _Nonnull info) {
-        NSLog(@"-----获取到图片----");
+//        NSLog(@"-----获取到图片----");
 //        if (mode_asset.mode_asset.mediaType & PHAssetMediaTypeImage) {
 //            BOOL  isDownLoading = ![info objectForKey:PHImageCancelledKey]
 //            && ![info objectForKey:PHImageErrorKey] && ![info objectForKey:PHImageResultIsDegradedKey];
@@ -150,7 +193,7 @@
     return _mode_imageManager;
 }
 - (NSString *)description{
-    return [NSString stringWithFormat:@"fileurl = %@ image = %@",self.mode_fileUrl,self.mode_assetImage];
+    return [NSString stringWithFormat:@"fileurl = %@ image = %@  liveiamge = %@",self.mode_fileUrl,self.mode_assetImage,self.mode_livePhotoImage];
     
 }
 @end

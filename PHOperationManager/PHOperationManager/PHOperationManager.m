@@ -7,10 +7,13 @@
 //
 
 #import "PHOperationManager.h"
+
 @interface PHOperationManager()
 @property (nonnull ,strong, nonatomic) PHFetchResult   * ph_FetchReslt;
 @end
 static PHOperationManager * __operationManager = nil;
+static const char * manager_queue_identifer = "phoperationmanager.queue";
+
 @implementation PHOperationManager
 
     //用户授权判断
@@ -127,13 +130,10 @@ static PHOperationManager * __operationManager = nil;
         [assetsFetchResult enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             if ([obj isKindOfClass:[PHAsset class]]) {
                 PHAsset * asset = (PHAsset *)obj;
-                if (asset.mediaType & PHAssetMediaTypeImage) {
-
-                    PHAssetMode * mode = [PHAssetMode manager_TransformAssetToAssetMode:asset];
-                    [assetModeArray addObject:mode];
+                PHAssetMode * mode = [PHAssetMode manager_TransformAssetToAssetMode:asset];
+                [assetModeArray addObject:mode];
 
 
-                }
             }
         }];
         CHECK_BLOCK_EXIST(unitAssetBlock,assetModeArray);
@@ -148,47 +148,25 @@ static PHOperationManager * __operationManager = nil;
     self.manager_FetchOptions =[[PHFetchOptions alloc]init];
     self.manager_FetchOptions.sortDescriptors= @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
     PHFetchResult * monthFetch = [PHAsset fetchAssetsWithOptions:self.manager_FetchOptions?self.manager_FetchOptions:nil];
+    dispatch_async(self.manager_ImageSerialQueue, ^{
+        [self resetFetchResult:monthFetch withCompletion:monthListBlock];
+    });
+
+
+}
+- (void)resetFetchResult:(PHFetchResult *)monthFetch withCompletion:(void (^)(NSArray <NSDictionary *>* list))monthListBlock{
+
+
     NSMutableArray * yearArray = [NSMutableArray arrayWithCapacity:0];
     NSMutableArray * monthArray = [NSMutableArray array];
     NSMutableArray * modelArray = [NSMutableArray array];
-
-   __block UtilTools * tools ;
-
-    PHContentEditingInputRequestOptions * op = [[PHContentEditingInputRequestOptions alloc]init];
-    op.networkAccessAllowed = NO;
-    op.canHandleAdjustmentData = ^BOOL(PHAdjustmentData * data){
-        return NO;
-    };
-    PHImageRequestOptions * operations = [[PHImageRequestOptions alloc]init];
-    operations.networkAccessAllowed = NO;
-    operations.synchronous = NO;
-    for (int i=0; i<monthFetch.count; i++) {
-        PHAsset * asset = [monthFetch objectAtIndex:i];
-        NSLog(@"----");
-
-        
-        [[PHImageManager defaultManager] requestImageDataForAsset:asset options:operations resultHandler:^(NSData * _Nullable imageData, NSString * _Nullable dataUTI, UIImageOrientation orientation, NSDictionary * _Nullable info) {
-            NSLog(@"info = %@",info);
-
-        }];
-
-//        [asset requestContentEditingInputWithOptions:op completionHandler:^(PHContentEditingInput * _Nullable contentEditingInput, NSDictionary * _Nonnull info) {
-//            NSLog(@"请求到图片");
-//        }];
-    }
-    return ;
     if (monthFetch) {
 
+        __block UtilTools * tools ;
         [monthFetch enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
 
             PHAsset * asset = (PHAsset *)obj;
-//            PHAssetMode * assModel = [PHAssetMode manager_TransformAssetToAssetMode:asset];
-//            [assModel handleCallBackTheLocalFilePathWithAsset:asset withCompletionBlock:^(id assetMode) {
-//                PHAssetMode * mod = (PHAssetMode *)assModel;
-//                NSLog(@"=======modfilepath = %@",mod.mode_fileName);
-//
-//            }];
-             tools = [UtilTools getCurrentWeekOfYearByDate:asset.creationDate];
+            tools = [UtilTools getCurrentWeekOfYearByDate:asset.creationDate];
             [modelArray addObject:tools];
 
             if (![yearArray containsObject:tools.tool_year]) {
@@ -199,8 +177,6 @@ static PHOperationManager * __operationManager = nil;
                 [monthArray addObject:tools.tool_month];
 //                NSLog(@"month = %@",monthArray);
             }
-
-
 
         }];
 
@@ -213,6 +189,8 @@ static PHOperationManager * __operationManager = nil;
                 PHAssetMode * mode = [PHAssetMode manager_TransformAssetToAssetMode:modelAsset];
 
                 UtilTools * utilTools = modelArray[i];
+//                NSLog(@"utistoolsmonth = %@",utilTools.tool_month);
+
                 if ([yearKey isEqualToString:utilTools.tool_year]) {
                     if ([[totalDict allKeys]containsObject:utilTools.tool_year]) {
                         NSMutableDictionary * yearDic = [totalDict objectForKey:yearKey];
@@ -239,7 +217,7 @@ static PHOperationManager * __operationManager = nil;
                         [monthList addObject:mode];
                         [yearDict setObject:monthList forKey:utilTools.tool_month];
                         [totalDict setObject:yearDict forKey:utilTools.tool_year];
-
+                        
                     }
                 }
             }
@@ -247,13 +225,47 @@ static PHOperationManager * __operationManager = nil;
         
         NSMutableArray *  blockArray = [NSMutableArray array];
         [blockArray addObject:totalDict];
-        CHECK_BLOCK_EXIST(monthListBlock,blockArray);
 
-//        NSLog(@"total = %@",totalDict);
 
+
+//    NSLog(@"total = %@",blockArray);
+            //2.  开始遍历请求图片的真实地址  按照月份进行分类
+            // e.g  2015-7  2015 -10
+        NSMutableArray * sortArray = [NSMutableArray array];
+
+        for (NSDictionary * yearDictTotal in blockArray) {
+
+            for (NSString * yearKeys in [yearDictTotal allKeys]) {
+//                NSLog(@"###########   yearkey = %@",yearKeys);
+                NSDictionary   * yearSubDict = yearDictTotal[yearKeys];
+
+               NSArray * monthCaterArr = [[yearSubDict allKeys] sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+                   return [obj1 compare:obj2 options:NSNumericSearch];
+               }];
+                for (NSString * monthKeys in monthCaterArr) {
+//                    NSLog(@"##########  monthkeys = %@",monthKeys);
+                    NSDictionary  * year_month_dict = @{[NSString stringWithFormat:@"%@-%@",yearKeys,monthKeys]:yearSubDict[monthKeys]};
+//                    NSLog(@"year_month = %@",year_month_dict);
+
+                    [sortArray addObject:year_month_dict];
+
+                }
+            }
+        }
+         CHECK_BLOCK_EXIST(monthListBlock,sortArray);
 
 
     }
+
+}
+
+static inline  dispatch_group_t  CreateNotifyGroup(){
+   static  dispatch_group_t  group;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        group = dispatch_group_create();
+    });
+    return group;
 
 }
 #pragma mark -- 获取资源时所配置的资源参数 ，要求效率最高
@@ -279,6 +291,12 @@ static PHOperationManager * __operationManager = nil;
     return _manager_EdittingInputRequestOperations;
 }
 
+- (dispatch_queue_t)manager_ImageSerialQueue{
+    if (!_manager_ImageSerialQueue) {
+        _manager_ImageSerialQueue = dispatch_queue_create(manager_queue_identifer, DISPATCH_QUEUE_CONCURRENT);
+    }
+    return _manager_ImageSerialQueue;
+}
 #pragma mark --shareOperationManager  单利对象调用此方法
 + (instancetype)shareOperationManager{
 
