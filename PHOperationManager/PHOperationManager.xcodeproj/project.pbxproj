@@ -13,10 +13,10 @@
 		B0155A1A1CC0A18400F29CB7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B0155A181CC0A18400F29CB7 /* Main.storyboard */; };
 		B0155A1C1CC0A18400F29CB7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B0155A1B1CC0A18400F29CB7 /* Assets.xcassets */; };
 		B0155A1F1CC0A18400F29CB7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B0155A1D1CC0A18400F29CB7 /* LaunchScreen.storyboard */; };
-		B0155A281CC0A1B600F29CB7 /* PHOperationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B0155A271CC0A1B600F29CB7 /* PHOperationManager.m */; };
-		B0155A2B1CC0C28100F29CB7 /* PHAlbumMode.m in Sources */ = {isa = PBXBuildFile; fileRef = B0155A2A1CC0C28100F29CB7 /* PHAlbumMode.m */; };
-		B0155A2E1CC0E1D000F29CB7 /* PHAssetMode.m in Sources */ = {isa = PBXBuildFile; fileRef = B0155A2D1CC0E1D000F29CB7 /* PHAssetMode.m */; };
-		B0155A311CC772F100F29CB7 /* UtilTools.m in Sources */ = {isa = PBXBuildFile; fileRef = B0155A301CC772F100F29CB7 /* UtilTools.m */; };
+		B0B313661CCF561F00E89CC1 /* PHAlbumMode.m in Sources */ = {isa = PBXBuildFile; fileRef = B0B3135F1CCF561F00E89CC1 /* PHAlbumMode.m */; };
+		B0B313671CCF561F00E89CC1 /* PHAssetMode.m in Sources */ = {isa = PBXBuildFile; fileRef = B0B313611CCF561F00E89CC1 /* PHAssetMode.m */; };
+		B0B313681CCF561F00E89CC1 /* PHOperationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B0B313631CCF561F00E89CC1 /* PHOperationManager.m */; };
+		B0B313691CCF561F00E89CC1 /* UtilTools.m in Sources */ = {isa = PBXBuildFile; fileRef = B0B313651CCF561F00E89CC1 /* UtilTools.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,14 +30,14 @@
 		B0155A1B1CC0A18400F29CB7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B0155A1E1CC0A18400F29CB7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B0155A201CC0A18400F29CB7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B0155A261CC0A1B600F29CB7 /* PHOperationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PHOperationManager.h; sourceTree = "<group>"; };
-		B0155A271CC0A1B600F29CB7 /* PHOperationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PHOperationManager.m; sourceTree = "<group>"; };
-		B0155A291CC0C28100F29CB7 /* PHAlbumMode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PHAlbumMode.h; sourceTree = "<group>"; };
-		B0155A2A1CC0C28100F29CB7 /* PHAlbumMode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PHAlbumMode.m; sourceTree = "<group>"; };
-		B0155A2C1CC0E1D000F29CB7 /* PHAssetMode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PHAssetMode.h; sourceTree = "<group>"; };
-		B0155A2D1CC0E1D000F29CB7 /* PHAssetMode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PHAssetMode.m; sourceTree = "<group>"; };
-		B0155A2F1CC772F100F29CB7 /* UtilTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UtilTools.h; sourceTree = "<group>"; };
-		B0155A301CC772F100F29CB7 /* UtilTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UtilTools.m; sourceTree = "<group>"; };
+		B0B3135E1CCF561F00E89CC1 /* PHAlbumMode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PHAlbumMode.h; sourceTree = "<group>"; };
+		B0B3135F1CCF561F00E89CC1 /* PHAlbumMode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PHAlbumMode.m; sourceTree = "<group>"; };
+		B0B313601CCF561F00E89CC1 /* PHAssetMode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PHAssetMode.h; sourceTree = "<group>"; };
+		B0B313611CCF561F00E89CC1 /* PHAssetMode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PHAssetMode.m; sourceTree = "<group>"; };
+		B0B313621CCF561F00E89CC1 /* PHOperationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PHOperationManager.h; sourceTree = "<group>"; };
+		B0B313631CCF561F00E89CC1 /* PHOperationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PHOperationManager.m; sourceTree = "<group>"; };
+		B0B313641CCF561F00E89CC1 /* UtilTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UtilTools.h; sourceTree = "<group>"; };
+		B0B313651CCF561F00E89CC1 /* UtilTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UtilTools.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,14 +74,7 @@
 				B0155A131CC0A18400F29CB7 /* AppDelegate.m */,
 				B0155A151CC0A18400F29CB7 /* ViewController.h */,
 				B0155A161CC0A18400F29CB7 /* ViewController.m */,
-				B0155A261CC0A1B600F29CB7 /* PHOperationManager.h */,
-				B0155A271CC0A1B600F29CB7 /* PHOperationManager.m */,
-				B0155A291CC0C28100F29CB7 /* PHAlbumMode.h */,
-				B0155A2A1CC0C28100F29CB7 /* PHAlbumMode.m */,
-				B0155A2C1CC0E1D000F29CB7 /* PHAssetMode.h */,
-				B0155A2D1CC0E1D000F29CB7 /* PHAssetMode.m */,
-				B0155A2F1CC772F100F29CB7 /* UtilTools.h */,
-				B0155A301CC772F100F29CB7 /* UtilTools.m */,
+				B0B3135D1CCF561F00E89CC1 /* PHOperationManager */,
 				B0155A181CC0A18400F29CB7 /* Main.storyboard */,
 				B0155A1B1CC0A18400F29CB7 /* Assets.xcassets */,
 				B0155A1D1CC0A18400F29CB7 /* LaunchScreen.storyboard */,
@@ -97,6 +90,21 @@
 				B0155A101CC0A18400F29CB7 /* main.m */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		B0B3135D1CCF561F00E89CC1 /* PHOperationManager */ = {
+			isa = PBXGroup;
+			children = (
+				B0B3135E1CCF561F00E89CC1 /* PHAlbumMode.h */,
+				B0B3135F1CCF561F00E89CC1 /* PHAlbumMode.m */,
+				B0B313601CCF561F00E89CC1 /* PHAssetMode.h */,
+				B0B313611CCF561F00E89CC1 /* PHAssetMode.m */,
+				B0B313621CCF561F00E89CC1 /* PHOperationManager.h */,
+				B0B313631CCF561F00E89CC1 /* PHOperationManager.m */,
+				B0B313641CCF561F00E89CC1 /* UtilTools.h */,
+				B0B313651CCF561F00E89CC1 /* UtilTools.m */,
+			);
+			path = PHOperationManager;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -170,12 +178,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				B0155A171CC0A18400F29CB7 /* ViewController.m in Sources */,
-				B0155A2B1CC0C28100F29CB7 /* PHAlbumMode.m in Sources */,
+				B0B313681CCF561F00E89CC1 /* PHOperationManager.m in Sources */,
 				B0155A141CC0A18400F29CB7 /* AppDelegate.m in Sources */,
-				B0155A2E1CC0E1D000F29CB7 /* PHAssetMode.m in Sources */,
-				B0155A311CC772F100F29CB7 /* UtilTools.m in Sources */,
+				B0B313661CCF561F00E89CC1 /* PHAlbumMode.m in Sources */,
+				B0B313691CCF561F00E89CC1 /* UtilTools.m in Sources */,
 				B0155A111CC0A18400F29CB7 /* main.m in Sources */,
-				B0155A281CC0A1B600F29CB7 /* PHOperationManager.m in Sources */,
+				B0B313671CCF561F00E89CC1 /* PHAssetMode.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -326,6 +334,7 @@
 				B0155A251CC0A18400F29CB7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
