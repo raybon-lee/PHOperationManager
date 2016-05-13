@@ -41,11 +41,13 @@
     [[PHOperationManager shareOperationManager] requestAuthorizationStatus:^(RYAuthorizationStatus authorStatus) {
         if (RYAuthorizationStatus_Authorized ==authorStatus) {
             NSLog(@"auth 用户已授权");
+
         }
 
 
     }];
-    /*
+
+        //查询相册列表
     [[PHOperationManager shareOperationManager] managerQueryThePHAssetCollectionsFromSmartAlbumsHandleWithCompletion:^(NSArray<PHAlbumMode  *> * _Nonnull collectionAlbums) {
         [collectionAlbums enumerateObjectsUsingBlock:^(PHAlbumMode * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
              NSLog(@" %@",obj.album_name);
@@ -76,7 +78,7 @@
     }];
     NSString  * tool = [UtilTools returnTheFirstDateAndLastDateByDate:[NSDate date]];
     NSLog(@"tool = %@",tool);
-     */
+
         //按照年份和月份归类，e.g  2015-07  2015-10  2016-1
 
     [[PHOperationManager shareOperationManager] managerRequestMonthAssetsListOfTotalResource:^(NSArray<NSDictionary *> * _Nonnull monthArrayList) {
@@ -147,7 +149,7 @@
 
     cell.textLabel.text = [NSString stringWithFormat:@"year-month =%@ -count = %d",[[keys allKeys] firstObject],[[[keys allValues] firstObject] count]];
     cell.imageView.image = albumMode.mode_assetImage;
-    
+    cell.imageView.layer.masksToBounds = YES;
     return cell;
 }
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
