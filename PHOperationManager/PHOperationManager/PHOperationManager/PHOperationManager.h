@@ -71,6 +71,12 @@ NS_CLASS_AVAILABLE_IOS(8_0)  @interface PHOperationManager : NSObject<NSCopying,
  *  @since <#1.0#>
  */
 @property (nonatomic,strong) PHFetchOptions  *   manager_FetchOptions;
+/*!
+ *  @brief 设置批量请求资源参数，设置参数请求配置
+ *
+ *  @since 2.4.1
+ */
+@property (nonatomic,strong) PHFetchOptions  *   manager_FetchLimitOptions;
 
 /*!
  *  @brief 获取video时所要做的一些参数
@@ -86,13 +92,23 @@ NS_CLASS_AVAILABLE_IOS(8_0)  @interface PHOperationManager : NSObject<NSCopying,
  *  @brief 获取图片时的并行队列
  */
 @property (nonatomic,strong) dispatch_queue_t        manager_ImageSerialQueue;
-
+/*!
+ *  @brief 获取相册资源的并发队列
+ *
+ *  @since <#2.4.1#>
+ */
+@property (nonatomic,strong) dispatch_queue_t        manager_ImageConcurrentQueue;
 
 /*!
  *  @brief 是否获取当前编辑后的资源，默认状态是NO，  设置为YES，则获取最新编辑后的资源
  */
 @property (nonatomic,assign) BOOL     isGetCurrentSource;
-
+/*!
+ *  @brief 请求资源限制数量，支持分批查询 默认 值是 200 个资源
+ *
+ *  @since 2.4.1
+ */
+@property (nonatomic,assign) NSInteger   manager_FetchSourceLimit;
 
 /*!
  *  @brief 是否支持联网获取iCloud  内的图片  默认是不支持
@@ -169,6 +185,31 @@ NS_CLASS_AVAILABLE_IOS(8_0)  @interface PHOperationManager : NSObject<NSCopying,
  *  @param monthListBlock 划分完毕回调当前数据
  */
 - (void)managerRequestMonthAssetsListOfTotalResource:(void (^)(NSArray <NSDictionary *> * monthArrayList))monthListBlock;
+
+/*!
+ *  @brief 分批请求图片资源  --新增接口  9.0  API 使用 ，不支持8.0 接口
+ *
+ *  @param limitCount 单次请求的数量大小
+ *  @param limitBlock 回调响应
+ *
+ *  @since 2.4.1
+ */
+- (void)managerRequestAssetWithFetchLimitCount:(NSInteger )limitCount handleCompletion:(void (^)(NSArray * objArray))limitBlock;
+
+
+/*!
+ *  @brief 主要处理单个的资源文件 ，用于获取文件的的真实地址，保存到本地tmp 目录内临时缓存目录
+ *        图片的写入采用的是异步安全模式，每次保证单个文件的写入，资源的获取是异步并发队列
+ *  @param items       单个的assetMode  的资源 传入 PHAssetMode
+ *  @param handleBlock 用于处理完毕的回调
+ */
+- (void)managerSavePhotosToLocalPathWithDataItems:(id)items  handleCompletion:(void (^)(BOOL isSuccess,NSArray <NSString * >* localPath ,NSString * fileName))handleBlock;
+/*!
+ *  @brief API 用于查询本地沙盒中的tmp  文件夹 内的路径 返回一个数组 此地址是可以供开发者上传到服务器
+ *  注： tmp 文件夹中的资源，会在设备重启之后就会移除，所以不必担心资源的占用问题
+ *  @param completeBlock 用于查询完毕的回调处理
+ */
+- (void)managerQueryLocalFileSubPathsWithTmpPathWithCompleteHanle:(void (^)(NSArray <NSString *>* localPath,NSArray <NSString *> * fileNameArray))completeBlock;
 
 @end
 NS_ASSUME_NONNULL_END

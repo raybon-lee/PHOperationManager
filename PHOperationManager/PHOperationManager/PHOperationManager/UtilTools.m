@@ -66,10 +66,7 @@
 
 + (UtilTools  *)getCurrentWeekOfYearByDate:(NSDate *)date{
 
-    UtilTools * tools=nil;
-    if (!tools) {
-        tools = [[UtilTools alloc]init];
-    }
+    UtilTools * tools= [[UtilTools alloc]init];
     NSDateComponents * dateComponets =[tools.tool_Canlendar components:NSCalendarUnitYear| NSCalendarUnitMonth |NSCalendarUnitWeekOfMonth | NSCalendarUnitWeekday| NSCalendarUnitDay|NSCalendarUnitWeekOfYear|NSCalendarUnitYearForWeekOfYear fromDate:date];
     
     tools.tool_year = [NSString stringWithFormat:@"%d",dateComponets.year];
@@ -83,6 +80,16 @@
 //    NSLog(@"tools = %@",tools);
     return tools;
 
+}
+static UtilTools * CreateTools(){
+
+    static UtilTools * __tools = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        __tools = [[UtilTools alloc]init];
+
+    });
+    return __tools;
 }
 - (UtilTools *)utils_tool{
     if (!_utils_tool) {

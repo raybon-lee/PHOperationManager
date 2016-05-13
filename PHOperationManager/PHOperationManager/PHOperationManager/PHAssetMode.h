@@ -14,7 +14,7 @@
  *
  *  @return 返回BOOL类型 ，成立返回YES
  */
-static BOOL CHECK_IOS_VERSION_NUMBER_8_0(){
+static inline BOOL CHECK_IOS_VERSION_NUMBER_8_0(){
     if (NSFoundationVersionNumber_iOS_8_0 >=1047.25f) {
         return YES;
     }
@@ -25,7 +25,7 @@ static BOOL CHECK_IOS_VERSION_NUMBER_8_0(){
  *
  *  @return 如果 版本 大于 9.0 则返回 YES， 否则返回NO
  */
-static BOOL CHECK_IOS_VERSION_NUMBER_9_0(){
+static inline   BOOL CHECK_IOS_VERSION_NUMBER_9_0(){
 
     if ([[UIDevice currentDevice].systemVersion floatValue]>=9.0) {
         return YES;
@@ -58,6 +58,9 @@ typedef void (^HandleFilePathCompletion)(id assetMode);
  *  @brief 相册缩略图
  */
 @property (nonatomic,strong) UIImage         *  mode_assetImage;
+
+@property (nonatomic,strong) NSData          * mode_ImageData;
+
 /*!
  *  @brief 图片管理器
  */
