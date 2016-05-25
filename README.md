@@ -64,6 +64,30 @@
 
 ```
 
+###  单次批量查询
+
+```
+/*!
+*  @brief 主要负责处理批量批量查询图片的请求，解决单次查询数据量多大的问题，可以设置单次请求量，已经单次请求索引地址
+*
+*  @param limitCount 单次请求最大的限制数量
+*  @param startIndex 单次获取图片的索引地址
+*  @param limitBlock 最终的回调结果
+*
+*  @since 2.4.1
+*/
+- (void)managerRequestAssetWithFetchSigleLimitCount:(NSInteger )limitCount  startIndex:(NSInteger )startIndex  handleCompletion:(void (^)(NSArray * objArray))limitBlock;
+```
+
 ###  按月进行分类查询
+
+```
+/*!
+*  @brief 按照月对资源进行一个划分，排序规则，每个月的资源在一起
+*
+*  @param monthListBlock 划分完毕回调当前数据
+*/
+- (void)managerRequestMonthAssetsListOfTotalResource:(void (^)(NSArray <NSDictionary *> * monthArrayList))monthListBlock;
+```
 
 ###  按年进行分类查询

@@ -76,7 +76,9 @@
     tools.tool_weekOfMonth = [NSString stringWithFormat:@"%d",dateComponets.weekOfMonth];
     tools.tool_weekOfYear = [NSString stringWithFormat:@"%d",dateComponets.weekOfYear];
     tools.tool_yearForWeekOfYear = [NSString stringWithFormat:@"%d",dateComponets.yearForWeekOfYear];
-    
+    tools.tool_GMTTime = [NSString stringWithFormat:@"%@",@(date.timeIntervalSince1970)];
+    tools.tool_TimeInterval = date.timeIntervalSince1970;
+
 //    NSLog(@"tools = %@",tools);
     return tools;
 

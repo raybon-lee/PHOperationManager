@@ -28,7 +28,18 @@
  *  @brief 当前周所对应的年
  */
 @property (nonatomic,strong) NSString *  tool_yearForWeekOfYear;
-
+/*!
+ *  @brief 文件的格林威治时间字符串
+ *
+ *  @since 1.0
+ */
+@property (nonatomic,strong) NSString * tool_GMTTime;
+/*!
+ *  @brief 文件 时间戳  ，利于上传服务器
+ *
+ *  @since 1.0
+ */
+@property (nonatomic,assign) NSTimeInterval tool_TimeInterval;
 
 /*!
  *  @brief 传入一个日期，来获取对应的周所在的周一和周末日期
